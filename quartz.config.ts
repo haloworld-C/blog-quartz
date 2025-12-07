@@ -73,7 +73,19 @@ const config: QuartzConfig = {
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
     ],
-    filters: [Plugin.RemoveDrafts()],
+    filters: [
+      // Plugin.RemoveDrafts()
+      // ✅ 仅允许添加publish标签的文章发布
+      {
+        name: "ExplicitPublish",
+        shouldPublish(_ctx, content) {
+          // 逻辑说明：
+          // 只有当文件的 YAML 头部明确写了 publish: true 时，才返回 true (发布)
+          // 其他情况（没写 publish，或者 publish: false）统统返回 false (不发布)
+          return content.frontmatter?.publish === true
+        },
+      },
+    ],
     emitters: [
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),

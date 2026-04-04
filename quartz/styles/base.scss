@@ -210,6 +210,38 @@ a {
       margin: 0 auto;
     }
 
+    body:not([data-slug="index"]) & {
+      @media all and ($tablet) {
+        grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr);
+        column-gap: 1.5rem;
+      }
+
+      @media all and ($desktop) {
+        grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr) minmax(16rem, 18rem);
+        column-gap: 2rem;
+      }
+    }
+
+    body:not([data-slug="index"]):has(.sidebar.right:empty) & {
+      @media all and ($tablet) {
+        grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr);
+        grid-template-rows: auto auto auto;
+        grid-template-areas:
+          "grid-sidebar-left grid-header"
+          "grid-sidebar-left grid-center"
+          "grid-sidebar-left grid-footer";
+      }
+
+      @media all and ($desktop) {
+        grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr);
+        grid-template-rows: auto auto auto;
+        grid-template-areas:
+          "grid-sidebar-left grid-header"
+          "grid-sidebar-left grid-center"
+          "grid-sidebar-left grid-footer";
+      }
+    }
+
     & .sidebar {
       gap: 1.2rem;
       top: 0;
@@ -220,10 +252,29 @@ a {
       position: sticky;
     }
 
+    body:not([data-slug="index"]) & .sidebar {
+      @media all and not ($mobile) {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+
     & .sidebar.left {
       z-index: 1;
       grid-area: grid-sidebar-left;
       flex-direction: column;
+
+      body:not([data-slug="index"]) & {
+        @media all and not ($mobile) {
+          gap: 0.9rem;
+          align-items: stretch;
+        }
+      }
+
+      body:not([data-slug="index"]) & .search {
+        max-width: 100%;
+      }
+
       @media all and ($mobile) {
         gap: 0;
         align-items: center;
@@ -240,6 +291,11 @@ a {
       grid-area: grid-sidebar-right;
       margin-right: 0;
       flex-direction: column;
+
+      &:empty {
+        display: none;
+      }
+
       @media all and ($mobile) {
         margin-left: inherit;
         margin-right: inherit;

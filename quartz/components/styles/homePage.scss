@@ -98,16 +98,17 @@ body[data-slug="index"] .page > #quartz-body .sidebar.left {
 }
 
 .knowledge-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .knowledge-card {
   display: block;
+  width: 100%;
   border: 1px solid var(--lightgray);
   border-radius: 12px;
-  padding: 0.9rem;
+  padding: 0.85rem;
   text-decoration: none;
   background: var(--light);
 }

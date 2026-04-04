@@ -4,6 +4,9 @@ import { htmlToJsx } from "../../util/jsx"
 import { PageList, byDateAndAlphabetical } from "../PageList"
 import { FullSlug, resolveRelative } from "../../util/path"
 import style from "../styles/homePage.scss"
+import Search from "../Search"
+import Darkmode from "../Darkmode"
+import ReaderMode from "../ReaderMode"
 
 // @ts-ignore
 import script from "../scripts/homeTabs.inline"
@@ -64,6 +67,9 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
 
   const folders = getHomeFolders(props)
   const recommendedFiles = getRecommendedFiles(props)
+  const SearchComponent = Search()
+  const DarkmodeComponent = Darkmode()
+  const ReaderModeComponent = ReaderMode()
 
   return (
     <div class="home-tabs popover-hint">
@@ -78,6 +84,14 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
           关于我
         </button>
       </nav>
+
+      <div class="home-toolbar">
+        <div class="home-toolbar-search">
+          <SearchComponent {...props} />
+        </div>
+        <DarkmodeComponent {...props} />
+        <ReaderModeComponent {...props} />
+      </div>
 
       <section class="home-tab-panel active" data-tab-panel="recommended">
         <div class="recommendation-waterfall">

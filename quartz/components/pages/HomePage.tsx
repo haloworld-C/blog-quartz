@@ -71,6 +71,8 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
   }
 
   const recommendedFiles = getRecommendedFiles(props)
+  const recommendedTree = getSectionTree(tree as Root, "推荐文章") ?? (tree as Root)
+  const recommendedContent = htmlToJsx(fileData.filePath!, recommendedTree) as ComponentChildren
   const knowledgeTree = getSectionTree(tree as Root, "知识导航") ?? (tree as Root)
   const knowledgeContent = htmlToJsx(fileData.filePath!, knowledgeTree) as ComponentChildren
   const aboutTree = getSectionTree(tree as Root, "关于我") ?? (tree as Root)
@@ -105,6 +107,7 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
 
       <section class="home-tab-panel active" data-tab-panel="recommended">
         <div class="recommendation-waterfall">
+          <article class="about-card">{recommendedContent}</article>
           <PageList {...props} allFiles={recommendedFiles} limit={24} />
         </div>
       </section>

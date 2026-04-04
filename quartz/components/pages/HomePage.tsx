@@ -78,24 +78,26 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
 
   return (
     <div class="home-tabs popover-hint">
-      <nav class="home-tabs-nav" aria-label="首页导航">
-        <button class="home-tab active" data-tab-trigger="recommended" type="button">
-          推荐文章
-        </button>
-        <button class="home-tab" data-tab-trigger="knowledge" type="button">
-          知识导航
-        </button>
-        <button class="home-tab" data-tab-trigger="about" type="button">
-          关于我
-        </button>
-      </nav>
+      <div class="home-tabs-header">
+        <nav class="home-tabs-nav" aria-label="首页导航">
+          <button class="home-tab active" data-tab-trigger="recommended" type="button">
+            推荐文章
+          </button>
+          <button class="home-tab" data-tab-trigger="knowledge" type="button">
+            知识导航
+          </button>
+          <button class="home-tab" data-tab-trigger="about" type="button">
+            关于我
+          </button>
+        </nav>
 
-      <div class="home-toolbar">
-        <div class="home-toolbar-search">
-          <SearchComponent {...props} />
+        <div class="home-toolbar">
+          <div class="home-toolbar-search">
+            <SearchComponent {...props} />
+          </div>
+          <DarkmodeComponent {...props} />
+          <ReaderModeComponent {...props} />
         </div>
-        <DarkmodeComponent {...props} />
-        <ReaderModeComponent {...props} />
       </div>
 
       <section class="home-tab-panel active" data-tab-panel="recommended">

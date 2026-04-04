@@ -49,6 +49,10 @@ function getRecommendedFiles(props: QuartzComponentProps) {
       const slug = file.slug
       if (!slug || slug === "index" || slug === "404") return false
       if (slug.startsWith("tags/") || slug.endsWith("/index")) return false
+      const recommend = file.frontmatter?.recommend
+      const isRecommended =
+        recommend === true || (typeof recommend === "string" && recommend.toLowerCase() === "true")
+      if (!isRecommended) return false
       return true
     })
     .sort(byDateAndAlphabetical(props.cfg))

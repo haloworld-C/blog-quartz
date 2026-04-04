@@ -19,7 +19,7 @@ body[data-slug="index"] .page > #quartz-body .sidebar.left {
 .home-tabs-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0;
   margin-bottom: 1rem;
 }
 
@@ -27,11 +27,15 @@ body[data-slug="index"] .page > #quartz-body .sidebar.left {
   border: 1px solid var(--lightgray);
   background: var(--light);
   color: var(--dark);
-  border-radius: 999px;
-  padding: 0.35rem 0.9rem;
+  border-radius: 0;
+  padding: 0.45rem 0.95rem;
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.home-tab + .home-tab {
+  border-left: 0;
 }
 
 .home-tab:hover {

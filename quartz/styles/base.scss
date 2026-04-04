@@ -212,33 +212,43 @@ a {
 
     body:not([data-slug="index"]) & {
       @media all and ($tablet) {
-        grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr);
-        column-gap: 1.5rem;
+        grid-template-columns: minmax(0, 1fr) minmax(16rem, 18rem);
+        column-gap: 2rem;
+        grid-template-rows: auto auto auto;
+        grid-template-areas:
+          "grid-header grid-sidebar-right"
+          "grid-center grid-sidebar-right"
+          "grid-footer grid-sidebar-right";
       }
 
       @media all and ($desktop) {
-        grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr) minmax(16rem, 18rem);
+        grid-template-columns: minmax(0, 1fr) minmax(16rem, 18rem);
         column-gap: 2rem;
+        grid-template-rows: auto auto auto;
+        grid-template-areas:
+          "grid-header grid-sidebar-right"
+          "grid-center grid-sidebar-right"
+          "grid-footer grid-sidebar-right";
       }
     }
 
     body:not([data-slug="index"]):has(.sidebar.right:empty) & {
       @media all and ($tablet) {
-        grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr);
         grid-template-rows: auto auto auto;
         grid-template-areas:
-          "grid-sidebar-left grid-header"
-          "grid-sidebar-left grid-center"
-          "grid-sidebar-left grid-footer";
+          "grid-header"
+          "grid-center"
+          "grid-footer";
       }
 
       @media all and ($desktop) {
-        grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr);
         grid-template-rows: auto auto auto;
         grid-template-areas:
-          "grid-sidebar-left grid-header"
-          "grid-sidebar-left grid-center"
-          "grid-sidebar-left grid-footer";
+          "grid-header"
+          "grid-center"
+          "grid-footer";
       }
     }
 
@@ -252,27 +262,13 @@ a {
       position: sticky;
     }
 
-    body:not([data-slug="index"]) & .sidebar {
-      @media all and not ($mobile) {
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-    }
-
     & .sidebar.left {
       z-index: 1;
       grid-area: grid-sidebar-left;
       flex-direction: column;
 
       body:not([data-slug="index"]) & {
-        @media all and not ($mobile) {
-          gap: 0.9rem;
-          align-items: stretch;
-        }
-      }
-
-      body:not([data-slug="index"]) & .search {
-        max-width: 100%;
+        display: none;
       }
 
       @media all and ($mobile) {

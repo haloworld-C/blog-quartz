@@ -108,7 +108,7 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
       <section class="home-tab-panel active" data-tab-panel="recommended">
         <div class="recommendation-waterfall">
           <article class="about-card">{recommendedContent}</article>
-          <PageList {...props} allFiles={recommendedFiles} limit={24} />
+          <PageList {...props} allFiles={recommendedFiles} limit={24} showIntro />
         </div>
       </section>
 

@@ -3,6 +3,8 @@ import { QuartzPluginData } from "../plugins/vfile"
 import { Date, getDate } from "./Date"
 import { QuartzComponent, QuartzComponentProps } from "./types"
 import { GlobalConfiguration } from "../cfg"
+import { Element, Root } from "hast"
+import { toString } from "hast-util-to-string"
 
 export type SortFn = (f1: QuartzPluginData, f2: QuartzPluginData) => number
 
@@ -55,9 +57,62 @@ export function byDateAndAlphabeticalFolderFirst(cfg: GlobalConfiguration): Sort
 type Props = {
   limit?: number
   sort?: SortFn
+  showIntro?: boolean
 } & QuartzComponentProps
 
-export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort }: Props) => {
+function getIntroductionExcerpt(page: QuartzPluginData): string | null {
+  const root = page.htmlAst as Root | undefined
+  if (!root?.children?.length) return null
+
+  const headingNames = new Set(["Introduction", "引言"])
+  let startIndex: number | undefined
+  let headingDepth: number | undefined
+  let endIndex = root.children.length
+
+  for (const [index, node] of root.children.entries()) {
+    if (node.type !== "element") continue
+
+    const element = node as Element
+    if (!/^h[1-6]$/.test(element.tagName)) continue
+
+    const depth = Number(element.tagName.slice(1))
+    const text = toString(element).trim()
+
+    if (startIndex === undefined) {
+      if (headingNames.has(text)) {
+        startIndex = index + 1
+        headingDepth = depth
+      }
+      continue
+    }
+
+    if (depth <= (headingDepth ?? depth)) {
+      endIndex = index
+      break
+    }
+  }
+
+  if (startIndex === undefined) return null
+
+  const excerpt = root.children
+    .slice(startIndex, endIndex)
+    .map((node) => toString(node).trim())
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim()
+
+  return excerpt || null
+}
+
+export const PageList: QuartzComponent = ({
+  cfg,
+  fileData,
+  allFiles,
+  limit,
+  sort,
+  showIntro,
+}: Props) => {
   const sorter = sort ?? byDateAndAlphabeticalFolderFirst(cfg)
   let list = allFiles.sort(sorter)
   if (limit) {
@@ -69,6 +124,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
       {list.map((page) => {
         const title = page.frontmatter?.title
         const tags = page.frontmatter?.tags ?? []
+        const intro = showIntro ? getIntroductionExcerpt(page) : null
 
         return (
           <li class="section-li">
@@ -82,6 +138,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
                     {title}
                   </a>
                 </h3>
+                {intro && <p class="page-intro">{intro}</p>}
               </div>
               <ul class="tags">
                 {tags.map((tag) => (
@@ -106,6 +163,11 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
 PageList.css = `
 .section h3 {
   margin: 0;
+}
+
+.section .page-intro {
+  color: var(--darkgray);
+  margin: 0.45rem 0 0;
 }
 
 .section > .tags {

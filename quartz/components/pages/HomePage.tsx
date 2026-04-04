@@ -3,6 +3,8 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 import { htmlToJsx } from "../../util/jsx"
 import { PageList, byDateAndAlphabetical } from "../PageList"
 import { FullSlug, resolveRelative } from "../../util/path"
+import { Element, ElementContent, Root } from "hast"
+import { toString } from "hast-util-to-string"
 import style from "../styles/homePage.scss"
 import Search from "../Search"
 import Darkmode from "../Darkmode"
@@ -60,6 +62,38 @@ function getRecommendedFiles(props: QuartzComponentProps) {
   return list
 }
 
+function getSectionTree(tree: Root, headingText: string, depth = 3): Root | null {
+  let startIndex: number | undefined
+  let endIndex = tree.children.length
+
+  for (const [index, node] of tree.children.entries()) {
+    if (node.type !== "element") continue
+
+    const element = node as Element
+    if (element.tagName !== `h${depth}`) continue
+
+    const text = toString(element).trim()
+    if (startIndex === undefined) {
+      if (text === headingText) {
+        startIndex = index + 1
+      }
+      continue
+    }
+
+    endIndex = index
+    break
+  }
+
+  if (startIndex === undefined) {
+    return null
+  }
+
+  return {
+    ...tree,
+    children: tree.children.slice(startIndex, endIndex) as ElementContent[],
+  }
+}
+
 const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
   const { fileData, tree } = props
   if (fileData.slug !== "index") {
@@ -71,7 +105,8 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
 
   const folders = getHomeFolders(props)
   const recommendedFiles = getRecommendedFiles(props)
-  const aboutContent = htmlToJsx(fileData.filePath!, tree) as ComponentChildren
+  const aboutTree = getSectionTree(tree as Root, "关于我") ?? (tree as Root)
+  const aboutContent = htmlToJsx(fileData.filePath!, aboutTree) as ComponentChildren
   const SearchComponent = Search()
   const DarkmodeComponent = Darkmode()
   const ReaderModeComponent = ReaderMode()

@@ -2,7 +2,6 @@ import { ComponentChildren } from "preact"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "../types"
 import { htmlToJsx } from "../../util/jsx"
 import { PageList, byDateAndAlphabetical } from "../PageList"
-import { FullSlug, resolveRelative } from "../../util/path"
 import { Element, ElementContent, Root } from "hast"
 import { toString } from "hast-util-to-string"
 import style from "../styles/homePage.scss"
@@ -12,38 +11,6 @@ import ReaderMode from "../ReaderMode"
 
 // @ts-ignore
 import script from "../scripts/homeTabs.inline"
-
-type HomeFolder = {
-  slug: string
-  title: string
-}
-
-function getHomeFolders(props: QuartzComponentProps): HomeFolder[] {
-  const knowledgeRoot = "content/"
-  const folderCount = new Map<string, number>()
-
-  for (const file of props.allFiles) {
-    const slug = file.slug
-    if (!slug || !slug.startsWith(knowledgeRoot)) continue
-    if (slug.endsWith("/index")) continue
-    const segments = slug.split("/")
-    if (segments.length < 2) continue
-
-    const root = `${segments[0]}/${segments[1]}`
-    folderCount.set(root, (folderCount.get(root) ?? 0) + 1)
-  }
-
-  return [...folderCount.entries()]
-    .map(([slug]) => {
-      const rootFile = props.allFiles.find((file) => file.slug === slug)
-      const folderIndex = props.allFiles.find((file) => file.slug === `${slug}/index`)
-      return {
-        slug: rootFile?.slug ?? folderIndex?.slug ?? slug,
-        title: rootFile?.frontmatter?.title ?? folderIndex?.frontmatter?.title ?? slug,
-      }
-    })
-    .sort((a, b) => a.title.localeCompare(b.title))
-}
 
 function getRecommendedFiles(props: QuartzComponentProps) {
   const list = props.allFiles
@@ -103,8 +70,9 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
     return <article class={classString}>{content}</article>
   }
 
-  const folders = getHomeFolders(props)
   const recommendedFiles = getRecommendedFiles(props)
+  const knowledgeTree = getSectionTree(tree as Root, "知识导航") ?? (tree as Root)
+  const knowledgeContent = htmlToJsx(fileData.filePath!, knowledgeTree) as ComponentChildren
   const aboutTree = getSectionTree(tree as Root, "关于我") ?? (tree as Root)
   const aboutContent = htmlToJsx(fileData.filePath!, aboutTree) as ComponentChildren
   const SearchComponent = Search()
@@ -142,16 +110,7 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
       </section>
 
       <section class="home-tab-panel" data-tab-panel="knowledge">
-        <div class="knowledge-grid">
-          {folders.map((folder) => (
-            <a
-              class="knowledge-card internal"
-              href={resolveRelative(fileData.slug!, folder.slug as FullSlug)}
-            >
-              <h3>{folder.title}</h3>
-            </a>
-          ))}
-        </div>
+        <article class="about-card">{knowledgeContent}</article>
       </section>
 
       <section class="home-tab-panel" data-tab-panel="about">

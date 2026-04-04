@@ -67,6 +67,7 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
 
   const folders = getHomeFolders(props)
   const recommendedFiles = getRecommendedFiles(props)
+  const aboutContent = htmlToJsx(fileData.filePath!, tree) as ComponentChildren
   const SearchComponent = Search()
   const DarkmodeComponent = Darkmode()
   const ReaderModeComponent = ReaderMode()
@@ -114,33 +115,7 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
       </section>
 
       <section class="home-tab-panel" data-tab-panel="about">
-        <article class="about-card">
-          <h3>熊也 (Hal)</h3>
-          <p>
-            机器人工程师，专注于 AI 与决策规划控制系统的结合，持续沉淀可复用的工程方法与算法理解。
-          </p>
-          <p>这里会记录从工程落地到算法理论的实践与思考。</p>
-        </article>
-        <div class="work-grid">
-          <a
-            class="work-card"
-            href="https://github.com/haloworld-C"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <h4>GitHub 主页</h4>
-            <p>个人项目与技术实践的持续更新。</p>
-          </a>
-          <a
-            class="work-card"
-            href="https://github.com/haloworld-C/blog-quartz"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <h4>博客源码</h4>
-            <p>本站 Quartz 博客工程，包含主题与内容结构改造。</p>
-          </a>
-        </div>
+        <article class="about-card">{aboutContent}</article>
       </section>
     </div>
   )

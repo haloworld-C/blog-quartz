@@ -14,7 +14,6 @@ import script from "../scripts/homeTabs.inline"
 type HomeFolder = {
   slug: string
   title: string
-  count: number
 }
 
 function getHomeFolders(props: QuartzComponentProps): HomeFolder[] {
@@ -33,16 +32,15 @@ function getHomeFolders(props: QuartzComponentProps): HomeFolder[] {
   }
 
   return [...folderCount.entries()]
-    .map(([slug, count]) => {
+    .map(([slug]) => {
       const rootFile = props.allFiles.find((file) => file.slug === slug)
       const folderIndex = props.allFiles.find((file) => file.slug === `${slug}/index`)
       return {
         slug: rootFile?.slug ?? folderIndex?.slug ?? slug,
-        count,
         title: rootFile?.frontmatter?.title ?? folderIndex?.frontmatter?.title ?? slug,
       }
     })
-    .sort((a, b) => b.count - a.count)
+    .sort((a, b) => a.title.localeCompare(b.title))
 }
 
 function getRecommendedFiles(props: QuartzComponentProps) {
@@ -116,7 +114,6 @@ const HomePage: QuartzComponent = (props: QuartzComponentProps) => {
               href={resolveRelative(fileData.slug!, folder.slug as FullSlug)}
             >
               <h3>{folder.title}</h3>
-              <p>{folder.count} 篇文章</p>
             </a>
           ))}
         </div>

@@ -11,8 +11,6 @@ import ReaderMode from "../ReaderMode"
 // @ts-ignore
 import script from "../scripts/homeTabs.inline"
 
-const EXCLUDED_HOME_FOLDERS = new Set(["tags", "content", "Resourse"])
-
 type HomeFolder = {
   slug: string
   title: string
@@ -20,24 +18,28 @@ type HomeFolder = {
 }
 
 function getHomeFolders(props: QuartzComponentProps): HomeFolder[] {
+  const knowledgeRoot = "content/"
   const folderCount = new Map<string, number>()
 
   for (const file of props.allFiles) {
     const slug = file.slug
-    if (!slug || slug === "index" || slug.startsWith("tags/") || slug === "404") continue
-    const root = slug.split("/")[0]
-    if (!root || EXCLUDED_HOME_FOLDERS.has(root)) continue
+    if (!slug || !slug.startsWith(knowledgeRoot)) continue
     if (slug.endsWith("/index")) continue
+    const segments = slug.split("/")
+    if (segments.length < 2) continue
+
+    const root = `${segments[0]}/${segments[1]}`
     folderCount.set(root, (folderCount.get(root) ?? 0) + 1)
   }
 
   return [...folderCount.entries()]
     .map(([slug, count]) => {
+      const rootFile = props.allFiles.find((file) => file.slug === slug)
       const folderIndex = props.allFiles.find((file) => file.slug === `${slug}/index`)
       return {
-        slug,
+        slug: rootFile?.slug ?? folderIndex?.slug ?? slug,
         count,
-        title: folderIndex?.frontmatter?.title ?? slug,
+        title: rootFile?.frontmatter?.title ?? folderIndex?.frontmatter?.title ?? slug,
       }
     })
     .sort((a, b) => b.count - a.count)

@@ -3,49 +3,52 @@ name: Deploy Quartz Site
 on:
   push:
     branches:
-      - main  # <--- 已修改：只监听 main 分支的推送
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          submodules: true   # 开启子模块
-          ssh-key: ${{ secrets.OBSIDIAN_SUBMODULE_KEY }} # 使用密钥
+          submodules: true
+          ssh-key: ${{ secrets.OBSIDIAN_SUBMODULE_KEY }}
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      
+
       - name: Install Dependencies
         run: npm ci
-      
+
       - name: Build Quartz
         run: npx quartz build
-      
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: public
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Checkout publish repository
+        uses: actions/checkout@v4
+        with:
+          repository: haloworld-C/haloworld-C.github.io
+          ref: main
+          token: ${{ secrets.PUBLISH_REPO_TOKEN }}
+          path: deploy-repo
+
+      - name: Sync build output
+        run: rsync -av --delete --exclude='.git' --exclude='.github' public/ deploy-repo/
+
+      - name: Commit and push site
+        run: |
+          cd deploy-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet --exit-code; then
+            echo "No changes to publish"
+            exit 0
+          fi
+          git commit -m "Deploy from haloworld-C/blog-quartz@${GITHUB_SHA}"
+          git push origin main

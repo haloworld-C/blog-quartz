@@ -16,7 +16,7 @@ const config: QuartzConfig = {
       provider: "plausible",
     },
     locale: "en-US",
-    baseUrl: "haloworld-C.github.io/blog-quartz",
+    baseUrl: "haloworld-c.github.io",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     theme: {
@@ -73,7 +73,7 @@ const config: QuartzConfig = {
       Plugin.Description(),
       Plugin.Latex({ renderEngine: "katex" }),
     ],
-	// Plugin.RemoveDrafts()
+    // Plugin.RemoveDrafts()
     filters: [Plugin.ExplicitPublish()],
     emitters: [
       Plugin.AliasRedirects(),

@@ -31,7 +31,7 @@ jobs:
 
       - name: Prepare publish repository
         env:
-          PUBLISH_REPO_TOKEN: ${{ secrets.PUBLISH_REPO_TOKEN }}
+          PUBLISH_REPO_TOKEN: ${{ secrets.GIT_PAGES }}
         run: |
           if [ -z "$PUBLISH_REPO_TOKEN" ]; then
             echo "Missing required secret: PUBLISH_REPO_TOKEN"
@@ -49,7 +49,7 @@ jobs:
 
       - name: Commit and push site
         env:
-          PUBLISH_REPO_TOKEN: ${{ secrets.PUBLISH_REPO_TOKEN }}
+          PUBLISH_REPO_TOKEN: ${{ secrets.GIT_PAGES }}
         run: |
           cd deploy-repo
           git config user.name "github-actions[bot]"

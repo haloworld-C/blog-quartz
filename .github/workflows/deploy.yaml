@@ -66,4 +66,8 @@ jobs:
             exit 0
           fi
           git commit -m "Deploy from haloworld-C/blog-quartz@${GITHUB_SHA}"
-          git push origin main
+          git remote -v
+          if ! git push origin main; then
+            echo "Publish push failed"
+            exit 1
+          fi

@@ -3,6 +3,17 @@ footer {
   margin-bottom: 4rem;
   opacity: 0.7;
 
+  & .footer-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    margin: 0.25rem 0 0.75rem;
+  }
+
+  & .footer-stats span[id^="busuanzi_container_"] {
+    display: none;
+  }
+
   & ul {
     list-style: none;
     margin: 0;

@@ -37,12 +37,17 @@ jobs:
             echo "Missing required secret: PUBLISH_REPO_TOKEN"
             exit 1
           fi
+          REMOTE_URL="https://x-access-token:${PUBLISH_REPO_TOKEN}@github.com/haloworld-C/haloworld-C.github.io.git"
           rm -rf deploy-repo
-          mkdir deploy-repo
-          cd deploy-repo
-          git init
-          git checkout -b main
-          git remote add origin "https://x-access-token:${PUBLISH_REPO_TOKEN}@github.com/haloworld-C/haloworld-C.github.io.git"
+          if git ls-remote --exit-code --heads "$REMOTE_URL" main >/dev/null 2>&1; then
+            git clone --depth 1 --branch main "$REMOTE_URL" deploy-repo
+          else
+            mkdir deploy-repo
+            cd deploy-repo
+            git init
+            git checkout -b main
+            git remote add origin "$REMOTE_URL"
+          fi
 
       - name: Sync build output
         run: rsync -av --delete --exclude='.git' --exclude='.github' public/ deploy-repo/

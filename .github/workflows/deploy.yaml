@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
-          ssh-key: ${{ secrets.OBSIDIAN_SUBMODULE_KEY }}
+          token: ${{ secrets.OBSIDIAN_SUBMODULE_TOKEN }}
 
       - uses: actions/setup-node@v6
         with:
